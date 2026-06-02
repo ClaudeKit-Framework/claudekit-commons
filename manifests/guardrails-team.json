@@ -3,52 +3,124 @@
   "framework": "guardrails",
   "variant": "team",
   "name": "Guardrails (Team)",
-  "description": "Security, compliance and privacy controls for team AI-assisted development. Includes session locking, contributor role separation, and shared audit records.",
+  "description": "Security, compliance and privacy controls for team AI-assisted development. Full seven-layer governance including automated hooks, MDM enforcement, and comprehensive regulatory coverage.",
   "version": "1.0.0",
-  "source_repo": "github.com/Claude-Kit-Framework/claudekit-guardrails",
+  "source_repo": "github.com/ClaudeKit-Framework/claudekit-guardrails",
   "source_ref": "main",
   "requires_commons": ">=1.0.0",
   "compatible_with": ["runner"],
   "incompatible_with": ["guardrails-solo"],
   "files": [
     {
-      "source": "variants/team/CLAUDE.md",
+      "source": "guardrails-team/CLAUDE.md",
       "destination": "CLAUDE.md",
       "conflict_strategy": "merge"
     },
     {
-      "source": "variants/team/.claude/settings.json",
+      "source": "guardrails-team/.claude/settings.json",
       "destination": ".claude/settings.json",
       "conflict_strategy": "merge"
     },
     {
-      "source": "variants/team/.claude/guardrails/team-config.json",
-      "destination": ".claude/guardrails/team-config.json",
+      "source": "guardrails-team/.claudeignore",
+      "destination": ".claudeignore",
+      "conflict_strategy": "append"
+    },
+    {
+      "source": "guardrails-team/.claude/commands/create-adr.md",
+      "destination": ".claude/commands/create-adr.md",
       "conflict_strategy": "create_only"
     },
     {
-      "source": "shared/.gitignore-additions",
-      "destination": ".gitignore",
-      "conflict_strategy": "append"
+      "source": "guardrails-team/.claude/commands/security-review.md",
+      "destination": ".claude/commands/security-review.md",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/.claude/commands/compliance-check.md",
+      "destination": ".claude/commands/compliance-check.md",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/.claude/hooks/pre-tool-call.sh",
+      "destination": ".claude/hooks/pre-tool-call.sh",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/.claude/hooks/post-write.sh",
+      "destination": ".claude/hooks/post-write.sh",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/docs/decisions/0000-template.md",
+      "destination": "docs/decisions/0000-template.md",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/docs/decisions/README.md",
+      "destination": "docs/decisions/README.md",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/SECURITY.md",
+      "destination": "SECURITY.md",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/SECURITY-QUICK-REF.md",
+      "destination": "SECURITY-QUICK-REF.md",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/managed-settings.json",
+      "destination": "managed-settings.json",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/Makefile",
+      "destination": "Makefile",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/.gitattributes",
+      "destination": ".gitattributes",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "guardrails-team/src/auth/CLAUDE.md",
+      "destination": "docs/examples/module-claude-md-auth.md",
+      "conflict_strategy": "create_only"
     }
   ],
   "post_install_actions": [
     {
       "action_id": "action-001",
-      "description": "Review CLAUDE.md and confirm the security rules match your project requirements.",
-      "why": "CLAUDE.md contains rules that govern Claude Code behaviour. They should be reviewed before your first session.",
+      "description": "Open CLAUDE.md and fill in Section 0 — your stack, test command, lint command, and key directories.",
+      "why": "CLAUDE.md Section 0 is blank by design. Claude Code needs your project context before it can apply the security rules correctly.",
       "estimated_minutes": 5
     },
     {
       "action_id": "action-002",
-      "description": "Open .claude/guardrails/team-config.json and add the names or identifiers of all project contributors.",
-      "why": "Team guardrails uses this list to assign manual actions and enforce the framework owner / contributor role split.",
+      "description": "Review .claude/settings.json and add your project's test, lint, and build commands to the allow list.",
+      "why": "The allow list ships with common defaults. Your specific commands will not be auto-approved until added.",
       "estimated_minutes": 5
+    },
+    {
+      "action_id": "action-003",
+      "description": "Run 'make setup' in your project root to make hook scripts executable and run the verification checklist.",
+      "why": "Hook scripts must be executable to run. make setup also verifies that all layers are active before your first session.",
+      "estimated_minutes": 5
+    },
+    {
+      "action_id": "action-004",
+      "description": "Run 'make deploy-settings' to copy managed-settings.json to the Claude Code system path on this machine.",
+      "why": "Layer 1 (MDM enforcement) only takes effect when managed-settings.json is deployed to the system path. This must be done once per machine.",
+      "estimated_minutes": 10
     }
   ],
   "commands": [
+    { "name": "/create-adr", "description": "Record an architectural decision." },
     { "name": "/security-review", "description": "Run an OWASP checklist review of recent changes." },
-    { "name": "/compliance-check", "description": "Run a regulatory compliance assessment." },
-    { "name": "/create-adr", "description": "Record an architectural decision." }
+    { "name": "/compliance-check", "description": "Run a regulatory compliance assessment." }
   ]
 }
