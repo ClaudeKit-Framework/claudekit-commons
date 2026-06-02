@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.claudekit.dev/session-contract.schema.json",
+  "title": "Session Contract",
+  "description": "Machine-readable session boundary document. Read by Claude Code at session start and at every task boundary.",
+  "type": "object",
+  "properties": {
+    "session_id": { "$ref": "_defs.schema.json#/$defs/session_id" },
+    "phase": { "type": "string" },
+    "scope": {
+      "type": "object",
+      "properties": {
+        "permitted_files": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "permitted_actions": {
+          "type": "array",
+          "items": { "enum": ["create", "edit", "delete", "run"] }
+        },
+        "explicitly_excluded": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "decision_authority": { "type": "string" }
+      },
+      "required": [
+        "permitted_files",
+        "permitted_actions",
+        "explicitly_excluded",
+        "decision_authority"
+      ],
+      "additionalProperties": false
+    },
+    "objectives": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "stop_conditions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "depth_limit": {
+      "type": "object",
+      "properties": {
+        "investigate": { "type": "string" },
+        "optimise": { "type": "string" },
+        "refactor": { "type": "string" }
+      },
+      "required": ["investigate", "optimise", "refactor"],
+      "additionalProperties": false
+    },
+    "dependency_policy": {
+      "type": "object",
+      "properties": {
+        "version_pinning": { "enum": ["exact", "range"] },
+        "auto_update_patch": { "type": "boolean" },
+        "require_lock_file_commit": { "type": "boolean" }
+      },
+      "required": [
+        "version_pinning",
+        "auto_update_patch",
+        "require_lock_file_commit"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "session_id",
+    "phase",
+    "scope",
+    "objectives",
+    "stop_conditions",
+    "depth_limit",
+    "dependency_policy"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,54 @@
+{
+  "id": "guardrails-team",
+  "framework": "guardrails",
+  "variant": "team",
+  "name": "Guardrails (Team)",
+  "description": "Security, compliance and privacy controls for team AI-assisted development. Includes session locking, contributor role separation, and shared audit records.",
+  "version": "1.0.0",
+  "source_repo": "github.com/Claude-Kit-Framework/claudekit-guardrails",
+  "source_ref": "main",
+  "requires_commons": ">=1.0.0",
+  "compatible_with": ["runner"],
+  "incompatible_with": ["guardrails-solo"],
+  "files": [
+    {
+      "source": "variants/team/CLAUDE.md",
+      "destination": "CLAUDE.md",
+      "conflict_strategy": "merge"
+    },
+    {
+      "source": "variants/team/.claude/settings.json",
+      "destination": ".claude/settings.json",
+      "conflict_strategy": "merge"
+    },
+    {
+      "source": "variants/team/.claude/guardrails/team-config.json",
+      "destination": ".claude/guardrails/team-config.json",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "shared/.gitignore-additions",
+      "destination": ".gitignore",
+      "conflict_strategy": "append"
+    }
+  ],
+  "post_install_actions": [
+    {
+      "action_id": "action-001",
+      "description": "Review CLAUDE.md and confirm the security rules match your project requirements.",
+      "why": "CLAUDE.md contains rules that govern Claude Code behaviour. They should be reviewed before your first session.",
+      "estimated_minutes": 5
+    },
+    {
+      "action_id": "action-002",
+      "description": "Open .claude/guardrails/team-config.json and add the names or identifiers of all project contributors.",
+      "why": "Team guardrails uses this list to assign manual actions and enforce the framework owner / contributor role split.",
+      "estimated_minutes": 5
+    }
+  ],
+  "commands": [
+    { "name": "/security-review", "description": "Run an OWASP checklist review of recent changes." },
+    { "name": "/compliance-check", "description": "Run a regulatory compliance assessment." },
+    { "name": "/create-adr", "description": "Record an architectural decision." }
+  ]
+}

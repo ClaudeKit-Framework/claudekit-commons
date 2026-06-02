@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.claudekit.dev/project-state.schema.json",
+  "title": "Project State",
+  "description": "Single source of truth traveling with the user's project across all frameworks and sessions.",
+  "type": "object",
+  "properties": {
+    "schema_version": { "type": "string" },
+    "user_profile": { "$ref": "_defs.schema.json#/$defs/user_profile" },
+    "ownership": { "$ref": "#/$defs/ownership" },
+    "framework_versions": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/framework_version_entry" }
+    },
+    "session_lock": {
+      "oneOf": [
+        { "$ref": "#/$defs/session_lock" },
+        { "type": "null" }
+      ]
+    },
+    "sessions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/session_summary" }
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "task-record.schema.json" }
+    },
+    "flags": {
+      "type": "array",
+      "items": { "$ref": "flag.schema.json" }
+    },
+    "assumptions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/assumption" }
+    },
+    "manual_actions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/manual_action" }
+    },
+    "divergence_log": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/divergence_entry" }
+    },
+    "security_audit_status": {
+      "oneOf": [
+        { "$ref": "#/$defs/security_audit_status" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "user_profile",
+    "ownership",
+    "framework_versions",
+    "session_lock",
+    "sessions",
+    "tasks",
+    "flags",
+    "assumptions",
+    "manual_actions",
+    "divergence_log",
+    "security_audit_status"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "ownership": {
+      "type": "object",
+      "properties": {
+        "owner": { "type": "string" },
+        "created_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "last_updated_at": { "$ref": "_defs.schema.json#/$defs/timestamp" }
+      },
+      "required": ["owner", "created_at", "last_updated_at"],
+      "additionalProperties": false
+    },
+    "framework_version_entry": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "installed_at": { "$ref": "_defs.schema.json#/$defs/session_id" },
+        "last_updated_at": { "$ref": "_defs.schema.json#/$defs/session_id" }
+      },
+      "required": ["version", "installed_at"],
+      "additionalProperties": false
+    },
+    "session_lock": {
+      "type": "object",
+      "properties": {
+        "session_id": { "$ref": "_defs.schema.json#/$defs/session_id" },
+        "owner": { "type": "string" },
+        "opened_at": { "$ref": "_defs.schema.json#/$defs/timestamp" }
+      },
+      "required": ["session_id", "owner", "opened_at"],
+      "additionalProperties": false
+    },
+    "session_summary": {
+      "type": "object",
+      "properties": {
+        "session_id": { "$ref": "_defs.schema.json#/$defs/session_id" },
+        "phase": { "type": "string" },
+        "status": {
+          "enum": ["planned", "in_progress", "complete", "skipped", "blocked"]
+        },
+        "objectives": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "planned_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "started_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "completed_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "change_narrative": { "type": "string" }
+      },
+      "required": ["session_id", "phase", "status", "objectives"],
+      "additionalProperties": false
+    },
+    "assumption": {
+      "type": "object",
+      "properties": {
+        "assumption_id": { "$ref": "_defs.schema.json#/$defs/assumption_id" },
+        "description": { "type": "string" },
+        "review_trigger": { "type": "string" },
+        "status": {
+          "enum": ["unconfirmed", "confirmed", "invalidated"]
+        },
+        "recorded_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "resolved_at": { "$ref": "_defs.schema.json#/$defs/timestamp" }
+      },
+      "required": [
+        "assumption_id",
+        "description",
+        "review_trigger",
+        "status",
+        "recorded_at"
+      ],
+      "additionalProperties": false
+    },
+    "manual_action": {
+      "type": "object",
+      "properties": {
+        "action_id": { "$ref": "_defs.schema.json#/$defs/manual_action_id" },
+        "description": { "type": "string" },
+        "why": { "type": "string" },
+        "assigned_to": { "type": "string" },
+        "status": {
+          "enum": ["pending", "complete", "skipped"]
+        },
+        "completed_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "skip_reason": { "type": "string" }
+      },
+      "required": ["action_id", "description", "why", "status"],
+      "additionalProperties": false
+    },
+    "divergence_entry": {
+      "type": "object",
+      "properties": {
+        "divergence_id": { "$ref": "_defs.schema.json#/$defs/divergence_id" },
+        "type": {
+          "enum": [
+            "approach_not_working",
+            "scope_change",
+            "fundamental_pivot",
+            "external_blocker",
+            "manual_action_failed"
+          ]
+        },
+        "description": { "type": "string" },
+        "detected_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "session_id": { "$ref": "_defs.schema.json#/$defs/session_id" },
+        "resolution": { "type": "string" },
+        "resolved_at": { "$ref": "_defs.schema.json#/$defs/timestamp" }
+      },
+      "required": [
+        "divergence_id",
+        "type",
+        "description",
+        "detected_at",
+        "session_id"
+      ],
+      "additionalProperties": false
+    },
+    "security_audit_status": {
+      "type": "object",
+      "properties": {
+        "last_run_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+        "findings_summary": { "type": "string" },
+        "unresolved_count": { "type": "integer", "minimum": 0 },
+        "critical_unresolved_count": { "type": "integer", "minimum": 0 },
+        "acknowledged_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "item_id": { "type": "string" },
+              "acknowledged_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+              "reason": { "type": "string" }
+            },
+            "required": ["item_id", "acknowledged_at", "reason"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "last_run_at",
+        "findings_summary",
+        "unresolved_count",
+        "critical_unresolved_count",
+        "acknowledged_items"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

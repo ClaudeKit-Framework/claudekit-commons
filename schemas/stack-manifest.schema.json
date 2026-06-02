@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.claudekit.dev/stack-manifest.schema.json",
+  "title": "Stack Manifest",
+  "description": "Living document tracking all declared runtimes and dependencies. Updated after every session that touches dependencies.",
+  "type": "object",
+  "properties": {
+    "runtime": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/dependency_detail" }
+    },
+    "last_full_audit": {
+      "oneOf": [
+        { "$ref": "_defs.schema.json#/$defs/session_id" },
+        { "type": "null" }
+      ]
+    },
+    "next_audit_due": {
+      "oneOf": [
+        { "$ref": "_defs.schema.json#/$defs/session_id" },
+        { "type": "null" }
+      ]
+    }
+  },
+  "required": [
+    "runtime",
+    "dependencies",
+    "last_full_audit",
+    "next_audit_due"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "dependency_detail": {
+      "type": "object",
+      "properties": {
+        "version": { "type": "string" },
+        "installed": { "type": "string" },
+        "declared_at": { "$ref": "_defs.schema.json#/$defs/session_id" },
+        "last_verified": { "$ref": "_defs.schema.json#/$defs/session_id" },
+        "licence": { "type": "string" },
+        "known_issues": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "peer_requirements": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "required": ["version", "declared_at", "licence", "known_issues"],
+      "additionalProperties": false
+    }
+  }
+}

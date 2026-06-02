@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.claudekit.dev/flag.schema.json",
+  "title": "Flag",
+  "description": "A deferred decision or risk with a resolution path. Flags are first-class objects, not notes.",
+  "type": "object",
+  "properties": {
+    "flag_id": { "$ref": "_defs.schema.json#/$defs/flag_id" },
+    "raised_in_session": { "$ref": "_defs.schema.json#/$defs/session_id" },
+    "description": { "type": "string" },
+    "priority": { "$ref": "_defs.schema.json#/$defs/flag_priority" },
+    "suggested_session_type": { "$ref": "_defs.schema.json#/$defs/suggested_session_type" },
+    "status": { "$ref": "_defs.schema.json#/$defs/flag_status" },
+    "resolved_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+    "resolution_notes": { "type": "string" }
+  },
+  "required": [
+    "flag_id",
+    "raised_in_session",
+    "description",
+    "priority",
+    "suggested_session_type",
+    "status"
+  ],
+  "if": {
+    "properties": { "status": { "const": "resolved" } },
+    "required": ["status"]
+  },
+  "then": {
+    "required": ["resolved_at", "resolution_notes"]
+  },
+  "additionalProperties": false
+}

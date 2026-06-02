@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.claudekit.dev/_defs.schema.json",
+  "title": "ClaudeKit Common Definitions",
+  "description": "Shared $defs referenced by all ClaudeKit schemas via $ref.",
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^session-\\d{3,}$"
+    },
+    "task_id": {
+      "type": "string",
+      "pattern": "^task-\\d{3,}-\\d{3,}$"
+    },
+    "flag_id": {
+      "type": "string",
+      "pattern": "^flag-\\d{3,}$"
+    },
+    "assumption_id": {
+      "type": "string",
+      "pattern": "^assumption-\\d{3,}$"
+    },
+    "manual_action_id": {
+      "type": "string",
+      "pattern": "^action-\\d{3,}$"
+    },
+    "divergence_id": {
+      "type": "string",
+      "pattern": "^divergence-\\d{3,}$"
+    },
+    "user_profile": {
+      "type": "object",
+      "properties": {
+        "experience_level": {
+          "enum": ["new", "some", "experienced"]
+        },
+        "explanation_depth": {
+          "enum": ["plain", "balanced", "technical"]
+        },
+        "instruction_detail": {
+          "enum": ["step_by_step", "outcomes_only"]
+        }
+      },
+      "required": ["experience_level", "explanation_depth", "instruction_detail"],
+      "additionalProperties": false
+    },
+    "flag_priority": {
+      "enum": ["next_task", "phase_end", "launch"]
+    },
+    "flag_status": {
+      "enum": ["open", "scheduled", "resolved"]
+    },
+    "suggested_session_type": {
+      "enum": ["investigation", "implementation", "review"]
+    },
+    "file_change": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "change_summary": { "type": "string" },
+        "lines_added": { "type": "integer", "minimum": 0 },
+        "lines_removed": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["path", "change_summary"],
+      "additionalProperties": false
+    },
+    "decision_record": {
+      "type": "object",
+      "properties": {
+        "decision": { "type": "string" },
+        "reason": { "type": "string" },
+        "reference": { "type": "string" }
+      },
+      "required": ["decision", "reason"],
+      "additionalProperties": false
+    },
+    "dependency_entry": {
+      "type": "object",
+      "properties": {
+        "package": { "type": "string" },
+        "version": { "type": "string" },
+        "pinned": { "type": "boolean" },
+        "verified_at": { "$ref": "#/$defs/timestamp" },
+        "licence": { "type": "string" }
+      },
+      "required": ["package", "version", "pinned", "licence"],
+      "additionalProperties": false
+    }
+  }
+}

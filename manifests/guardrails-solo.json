@@ -1,0 +1,43 @@
+{
+  "id": "guardrails-solo",
+  "framework": "guardrails",
+  "variant": "solo",
+  "name": "Guardrails (Solo)",
+  "description": "Security, compliance and privacy controls for solo AI-assisted development. Prevents credential leaks, enforces governance, creates audit records.",
+  "version": "1.0.0",
+  "source_repo": "github.com/Claude-Kit-Framework/claudekit-guardrails",
+  "source_ref": "main",
+  "requires_commons": ">=1.0.0",
+  "compatible_with": ["runner"],
+  "incompatible_with": ["guardrails-team"],
+  "files": [
+    {
+      "source": "variants/solo/CLAUDE.md",
+      "destination": "CLAUDE.md",
+      "conflict_strategy": "merge"
+    },
+    {
+      "source": "variants/solo/.claude/settings.json",
+      "destination": ".claude/settings.json",
+      "conflict_strategy": "merge"
+    },
+    {
+      "source": "shared/.gitignore-additions",
+      "destination": ".gitignore",
+      "conflict_strategy": "append"
+    }
+  ],
+  "post_install_actions": [
+    {
+      "action_id": "action-001",
+      "description": "Review CLAUDE.md and confirm the security rules match your project requirements.",
+      "why": "CLAUDE.md contains rules that govern Claude Code behaviour. They should be reviewed before your first session.",
+      "estimated_minutes": 5
+    }
+  ],
+  "commands": [
+    { "name": "/security-review", "description": "Run an OWASP checklist review of recent changes." },
+    { "name": "/compliance-check", "description": "Run a regulatory compliance assessment." },
+    { "name": "/create-adr", "description": "Record an architectural decision." }
+  ]
+}

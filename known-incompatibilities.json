@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schemas.claudekit.dev/known-incompatibilities.schema.json",
+  "version": "1.0.0",
+  "last_updated": "2026-06-02",
+  "entries": [
+    {
+      "id": "incompat-001",
+      "packages": [
+        { "name": "react", "version_range": ">=18.0.0" },
+        { "name": "react-router", "version_range": ">=5.0.0 <6.0.0" }
+      ],
+      "description": "React Router 5 does not support React 18's concurrent features.",
+      "severity": "warning",
+      "suggestion": "Upgrade to React Router 6.x",
+      "added_in_version": "1.0.0"
+    }
+  ]
+}

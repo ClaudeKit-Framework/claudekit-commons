@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.claudekit.dev/task-record.schema.json",
+  "title": "Task Record",
+  "description": "Per-task documentation written after every completed task, before moving to the next.",
+  "type": "object",
+  "properties": {
+    "task_id": { "$ref": "_defs.schema.json#/$defs/task_id" },
+    "session_id": { "$ref": "_defs.schema.json#/$defs/session_id" },
+    "objective": { "type": "string" },
+    "status": {
+      "enum": ["complete", "incomplete", "skipped"]
+    },
+    "completed_at": { "$ref": "_defs.schema.json#/$defs/timestamp" },
+    "files_modified": {
+      "type": "array",
+      "items": { "$ref": "_defs.schema.json#/$defs/file_change" }
+    },
+    "decisions_made": {
+      "type": "array",
+      "items": { "$ref": "_defs.schema.json#/$defs/decision_record" }
+    },
+    "dependencies_added": {
+      "type": "array",
+      "items": { "$ref": "_defs.schema.json#/$defs/dependency_entry" }
+    },
+    "flags_raised": {
+      "type": "array",
+      "items": { "$ref": "_defs.schema.json#/$defs/flag_id" }
+    },
+    "next_task_notes": { "type": "string" }
+  },
+  "required": [
+    "task_id",
+    "session_id",
+    "objective",
+    "status"
+  ],
+  "additionalProperties": false
+}

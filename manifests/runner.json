@@ -1,0 +1,57 @@
+{
+  "id": "runner",
+  "framework": "runner",
+  "variant": null,
+  "name": "Session Runner",
+  "description": "Runtime engine for executing sessions safely. Progress tracking, scope enforcement, manual action prompts, handoff validation.",
+  "version": "1.0.0",
+  "source_repo": "github.com/Claude-Kit-Framework/claudekit-runner",
+  "source_ref": "main",
+  "requires_commons": ">=1.0.0",
+  "compatible_with": ["guardrails-solo", "guardrails-team"],
+  "incompatible_with": [],
+  "files": [
+    {
+      "source": "CLAUDE.md",
+      "destination": "CLAUDE.md",
+      "conflict_strategy": "merge"
+    },
+    {
+      "source": ".claude/settings.json",
+      "destination": ".claude/settings.json",
+      "conflict_strategy": "merge"
+    },
+    {
+      "source": "templates/project-state.json",
+      "destination": "project-state.json",
+      "conflict_strategy": "create_only"
+    },
+    {
+      "source": "templates/stack-manifest.json",
+      "destination": "stack-manifest.json",
+      "conflict_strategy": "create_only"
+    }
+  ],
+  "post_install_actions": [
+    {
+      "action_id": "action-001",
+      "description": "Open project-state.json and confirm your user profile settings are correct.",
+      "why": "Your communication preferences were recorded during init. Confirm them before your first session.",
+      "estimated_minutes": 2
+    }
+  ],
+  "commands": [
+    { "name": "/help", "description": "Full command reference." },
+    { "name": "/start-session", "description": "Begin or resume a working session." },
+    { "name": "/end-session", "description": "Close a session and save progress." },
+    { "name": "/resume-session", "description": "Continue after an interruption." },
+    { "name": "/report-error", "description": "Flag something that went wrong." },
+    { "name": "/revise-scope", "description": "Trigger a replanning conversation." },
+    { "name": "/set-stack", "description": "Declare or update the tech stack." },
+    { "name": "/set-communication", "description": "Update communication preferences." },
+    { "name": "/check-updates", "description": "Manually check for framework updates." },
+    { "name": "/check-dependencies", "description": "Run a manual dependency verification pass." },
+    { "name": "/view-flags", "description": "Review all open flags and their priority." },
+    { "name": "/resolve-flag", "description": "Mark a flag as resolved with a reason." }
+  ]
+}
