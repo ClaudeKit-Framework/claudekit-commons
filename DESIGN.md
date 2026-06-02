@@ -18,7 +18,7 @@ ClaudeKit is an open source ecosystem of frameworks that guide anyone — from c
 **ClaudeKit** — working name, subject to change as the project grows beyond Claude.
 
 ### Home
-- **GitHub organisation:** Claude-Kit-Framework (github.com/Claude-Kit-Framework)
+- **GitHub organisation:** ClaudeKit-Framework (github.com/ClaudeKit-Framework)
 - **Website:** hosted, beginner-friendly human layer, primary entry point for non-technical users. Mobile interface required.
 - **GitHub Discussions:** community Q&A, show and tell, ideas — linked from website and all READMEs
 
@@ -27,7 +27,7 @@ ClaudeKit is an open source ecosystem of frameworks that guide anyone — from c
 ## Repository Structure
 
 ```
-github.com/Claude-Kit-Framework/
+github.com/ClaudeKit-Framework/
 ├── claudekit-commons/          ← shared contracts, schemas, init tooling
 ├── claudekit-guardrails/       ← rebuilt from local files, integrated into ecosystem
 ├── claudekit-design/           ← new: project design framework
@@ -40,7 +40,7 @@ github.com/Claude-Kit-Framework/
 ## The Frameworks
 
 ### 1. Guardrails
-*Rebuilt from local files of the deleted Claude-Code-Guardrails repo, integrated into ClaudeKit ecosystem under Claude-Kit-Framework org*
+*Rebuilt from local files of the deleted Claude-Code-Guardrails repo, integrated into ClaudeKit ecosystem under ClaudeKit-Framework org*
 
 Security, compliance and privacy controls for AI-assisted coding. Prevents credential leaks, enforces governance, creates audit records. Existing solo and team variants retained.
 
@@ -98,7 +98,7 @@ Not a user-facing framework — the shared contract layer that all other framewo
 |------|--------|
 | OS | Linux Mint |
 | IDE | VS Code with Claude Code |
-| GitHub org | github.com/Claude-Kit-Framework |
+| GitHub org | github.com/ClaudeKit-Framework |
 | Local Guardrails files | Preserved locally, to be committed to new claudekit-guardrails repo |
 
 ---
@@ -961,7 +961,7 @@ This document is the evolving output. Equivalent to Project Design and Scope Pla
 - Original Claude-Code-Guardrails GitHub repo deleted — local files preserved and will be used to seed claudekit-guardrails
 - Commons has no dependencies on other ClaudeKit frameworks
 - Manual session tracking using this document as persistent context
-- GitHub org created: github.com/Claude-Kit-Framework
+- GitHub org created: github.com/ClaudeKit-Framework
 - Org settings configured — repos not yet created
 
 **Stage 3 — Build Session Runner**
