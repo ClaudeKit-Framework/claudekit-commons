@@ -27,6 +27,11 @@
       "conflict_strategy": "append"
     },
     {
+      "source": "guardrails-solo/.gitignore",
+      "destination": ".gitignore",
+      "conflict_strategy": "append"
+    },
+    {
       "source": "guardrails-solo/.claude/commands/create-adr.md",
       "destination": ".claude/commands/create-adr.md",
       "conflict_strategy": "create_only"

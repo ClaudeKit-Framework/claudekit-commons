@@ -87,6 +87,11 @@
       "conflict_strategy": "create_only"
     },
     {
+      "source": "guardrails-team/.gitignore",
+      "destination": ".gitignore",
+      "conflict_strategy": "append"
+    },
+    {
       "source": "guardrails-team/src/auth/CLAUDE.md",
       "destination": "docs/examples/module-claude-md-auth.md",
       "conflict_strategy": "create_only"
