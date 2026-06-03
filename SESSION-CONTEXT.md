@@ -12,12 +12,20 @@ Status: Done, pushed to main
   task-record, handoff, flag, _defs)
 - All 5 conventions written (manual-action-block, phase-gate, 
   session-boundary, documentation-requirements, dependency-policy)
+- manifest-file-fields convention added — documents file entry fields including
+  skip_if_framework_present (no formal manifest schema exists; this convention
+  is the authoritative reference)
 - known-incompatibilities.json — structure defined, one example entry
 - COMPATIBILITY.md — structure defined, placeholder rows
-- Init tooling — init.sh, update.sh, lib scripts (detect, copy, output, audit stub)
+- Init tooling — init.sh, update.sh, lib scripts (detect, copy, output, audit)
+  - audit.sh outputs explicit warning; states manual review required; 
+    references SESSION-CONTEXT.md open flags for more information
+  - init.sh respects skip_if_framework_present when listing and copying files
 - Manifests — guardrails-solo (7 files), guardrails-team (16 files), runner
 - Manifests corrected — source paths, file lists, org name, solo commands, 
   team-config.json reference removed
+- runner manifest — create-adr.md entry added with 
+  skip_if_framework_present: ["guardrails-solo", "guardrails-team"]
 - DESIGN.md committed as persistent build context
 - All files committed and pushed to main
 
