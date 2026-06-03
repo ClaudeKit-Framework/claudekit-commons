@@ -219,7 +219,17 @@ echo ""
 for fw in "${SELECTED_FRAMEWORKS[@]}"; do
     manifest="$MANIFESTS_DIR/${fw}.json"
     echo "  $fw:"
-    jq -r '.files[].destination' "$manifest" | while IFS= read -r dest; do
+    file_count=$(jq '.files | length' "$manifest")
+    for ((i=0; i<file_count; i++)); do
+        dest=$(jq -r ".files[$i].destination" "$manifest")
+        skip=false
+        while IFS= read -r skip_fw; do
+            [[ -z "$skip_fw" ]] && continue
+            if [[ " ${SELECTED_FRAMEWORKS[*]} " == *" $skip_fw "* ]]; then
+                skip=true; break
+            fi
+        done < <(jq -r ".files[$i].skip_if_framework_present // [] | .[]" "$manifest")
+        [[ "$skip" == true ]] && continue
         echo "    $PROJECT_DIR/$dest"
     done
 done
@@ -261,6 +271,20 @@ for fw in "${SELECTED_FRAMEWORKS[@]}"; do
         src=$(jq -r ".files[$i].source" "$manifest")
         dest=$(jq -r ".files[$i].destination" "$manifest")
         strategy=$(jq -r ".files[$i].conflict_strategy" "$manifest")
+
+        skip=false
+        while IFS= read -r skip_fw; do
+            [[ -z "$skip_fw" ]] && continue
+            if [[ " ${SELECTED_FRAMEWORKS[*]} " == *" $skip_fw "* ]]; then
+                skip=true; break
+            fi
+        done < <(jq -r ".files[$i].skip_if_framework_present // [] | .[]" "$manifest")
+
+        if [[ "$skip" == true ]]; then
+            echo "  skipped  $dest (provided by another selected framework)"
+            continue
+        fi
+
         copy_file "$repo_dir/$src" "$PROJECT_DIR/$dest" "$strategy"
     done
 done

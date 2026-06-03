@@ -10,26 +10,18 @@ run_security_audit() {
 
     echo ""
     echo "────────────────────────────────────────"
-    echo "SECURITY AUDIT"
+    echo "⚠ SECURITY AUDIT — NOT YET IMPLEMENTED"
     echo "────────────────────────────────────────"
     echo ""
-    echo "⚠ Automated security audit is not yet implemented."
-    echo "  Review the following manually before proceeding:"
+    echo "  The automated security audit has not been built yet."
+    echo "  Manual review is required before proceeding."
     echo ""
-    echo "  - Check for credentials or secrets in existing files"
-    echo "  - Confirm .gitignore covers sensitive file patterns"
-    echo "  - Review git history for accidentally committed secrets"
+    echo "  Review the following before continuing:"
+    echo "    - Check for credentials or secrets in existing files"
+    echo "    - Confirm .gitignore covers sensitive file patterns"
+    echo "    - Review git history for accidentally committed secrets"
     echo ""
-    printf "  Type 'acknowledged' to continue: "
-    read -r response
-
-    if [[ "$response" != "acknowledged" ]]; then
-        echo ""
-        echo "  Audit acknowledgement required. Exiting."
-        exit 1
-    fi
-
-    echo ""
-    echo "  ℹ Acknowledged. A full automated audit will be available in a future update."
+    echo "  For more information, see the open flags in SESSION-CONTEXT.md"
+    echo "  (security audit scope is tracked there as a future design session)."
     echo ""
 }
