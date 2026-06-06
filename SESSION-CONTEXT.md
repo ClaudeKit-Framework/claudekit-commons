@@ -26,6 +26,7 @@ Status: Done, pushed to main
   team-config.json reference removed
 - runner manifest — create-adr.md entry added with 
   skip_if_framework_present: ["guardrails-solo", "guardrails-team"]
+- runner manifest org name typo fixed (Claude-Kit-Framework → ClaudeKit-Framework)
 - DESIGN.md committed as persistent build context
 - All files committed and pushed to main
 
@@ -39,8 +40,9 @@ Status: Done, pushed to main
   file structure is confirmed (same issue as guardrails manifests had)
 
 ## What's next
-- No further Stage 2 work
-- Update runner manifest after Stage 3 (claudekit-runner) is complete
+- Stage 2 cleanup complete — all commons files correct and pushed to main
+- Stage 4 ready to begin — build remaining frameworks using ClaudeKit
+  (Project Design, Scope Planner, website — full dogfooding begins)
 - Add known-incompatibilities.schema.json when convenient
 
 ## Notes
