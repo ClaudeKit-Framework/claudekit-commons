@@ -5,7 +5,7 @@
   "name": "Session Runner",
   "description": "Runtime engine for executing sessions safely. Progress tracking, scope enforcement, manual action prompts, handoff validation.",
   "version": "1.0.0",
-  "source_repo": "github.com/Claude-Kit-Framework/claudekit-runner",
+  "source_repo": "github.com/ClaudeKit-Framework/claudekit-runner",
   "source_ref": "main",
   "requires_commons": ">=1.0.0",
   "compatible_with": ["guardrails-solo", "guardrails-team"],
