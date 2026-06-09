@@ -23,6 +23,21 @@ A save block is produced:
 A save block is **not** produced after every topic. Save blocks mark meaningful
 stopping points — not every exchange.
 
+### Save Block Completeness
+
+Save blocks must be written to be sufficient as the sole
+input for document generation in a new chat. This is
+especially important when a fresh chat is recommended due
+to context degradation.
+
+The "Captured so far" field must contain a complete record
+of everything captured in the conversation — every confirmed
+decision, assumption, risk, flag, and deferred decision.
+Do not summarise. Record in full.
+
+A save block that is too thin to stand alone as document
+input is a failed save block.
+
 ## New Chat Triggers
 
 A new chat is recommended in five cases:
@@ -67,13 +82,11 @@ output document generation is next), Claude flags this *before* starting
 that phase:
 
 ```
-Before I start generating the [document], I want to flag that this
-conversation is already fairly long. Generating the full document will
-add significant context on top of what's already here.
-
-If you'd like, this is a good moment to produce a save block and
-continue in a fresh chat — the document will come out better with
-more room to work. Or I can start now if you'd prefer to keep going.
+Starting a new chat to generate the document is a good
+option here — your save block contains everything needed
+and the document will have a clean context window to work
+in. Or I can generate it now if you'd prefer to keep going.
+→ Produce save block for a new chat / Generate here
 ```
 
 **Tone guidance:** degradation signals are normalising, not alarming. The
@@ -133,7 +146,7 @@ Plain language descriptions for use in framework prompts and website content:
 | Save block at pause | "Save this to pick up where you left off" |
 | Save block at document complete | "Your [document] is ready — save this to continue in a new chat" |
 | Context degradation (reactive) | "This conversation is getting long — here's how to keep going in a fresh chat" |
-| Context degradation (proactive) | "Before we generate the document, you may want to start fresh" |
+| Context degradation (proactive) | "Starting a new chat to generate the document is a good option — your save block has everything needed" |
 | Out-of-scope item | "That's worth exploring, but not in this conversation" |
 | Framework handoff | "Time to move to the next step — here's what to do" |
 
