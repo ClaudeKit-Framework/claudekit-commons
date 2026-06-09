@@ -1,7 +1,7 @@
 # ClaudeKit — Design Summary
 
-> **Status:** Pre-build design review document  
-> **Version:** 0.7  
+> **Status:** Stage 4 in progress  
+> **Version:** 0.8  
 > **Last updated:** June 2026
 
 ---
@@ -51,12 +51,37 @@ Security, compliance and privacy controls for AI-assisted coding. Prevents crede
 ---
 
 ### 2. Project Design
-Structured discovery conversation that helps users articulate what they're building — goals, constraints, stakeholders, tech decisions, risk flags, assumptions.
+Structured discovery conversation that helps users articulate what they're building —
+goals, constraints, stakeholders, tech decisions, risk flags, assumptions.
 
-- **Interface:** Claude chat (primary) or Claude Code
+- **Interface:** Claude chat only — chat-native, no files installed into user projects
 - **Users:** anyone starting a new project, beginner to experienced
-- **Output:** design document with confirmed decisions, flagged assumptions, deferred decisions, and unknowns clearly labelled
-- **Note:** status counts in output are normalised explicitly so users don't feel incomplete documents are failures
+- **Delivery:** starter prompt copied from claudekit-design repo or website, pasted
+  into a new Claude chat
+- **Output:** versioned design document (project-design-v1.0.0.md) with confirmed
+  decisions, flagged assumptions, deferred decisions, and unknowns clearly labelled
+- **Note:** status counts in output are normalised explicitly so users don't feel
+  incomplete documents are failures
+
+**Conversation flow (7 topics):**
+1. Problem and purpose
+2. Target users (with conditional stakeholders)
+3. Success criteria
+4. Constraints (including compliance and regulatory flags)
+5. Tech decisions
+6. Assumptions
+7. Risks
+
+**Key behaviours:**
+- One question per turn throughout
+- I Don't Know system handles all non-answers (5 types: genuinely undecided,
+  outside their knowledge, doesn't matter yet, genuinely unknowable, avoidance)
+- Save blocks produced at meaningful stopping points — not after every topic
+- Context degradation check before document generation — user offered fresh chat
+  if conversation is long
+- Resume variant restores context from save block; generates document directly
+  if status is Complete
+- Communication preferences captured at opening, carried in save block
 
 ---
 
@@ -85,7 +110,9 @@ Not a user-facing framework — the shared contract layer that all other framewo
 
 **Contains:**
 - **Schemas:** project-state, stack-manifest, handoff, session-contract, task-record, flag
-- **Conventions:** manual action block format, phase gate spec, session boundary rules, documentation requirements, dependency policy
+- **Conventions:** manual action block format, phase gate spec, session boundary rules,
+  documentation requirements, dependency policy, manifest file fields,
+  chat session management, output document versioning
 - **Init tooling:** setup script, update script, framework manifests
 - **known-incompatibilities.json:** curated list of version combinations known to cause issues, maintained alongside framework updates
 - **COMPATIBILITY.md:** framework version matrix
@@ -99,7 +126,7 @@ Not a user-facing framework — the shared contract layer that all other framewo
 | OS | Linux Mint |
 | IDE | VS Code with Claude Code |
 | GitHub org | github.com/ClaudeKit-Framework |
-| Local Guardrails files | Preserved locally, to be committed to new claudekit-guardrails repo |
+| Local Guardrails files | Committed to claudekit-guardrails — complete |
 
 ---
 
@@ -701,27 +728,131 @@ Does that sound right, or is something else going on?
 
 ### Resume and Continuity in Chat
 
-Chat frameworks (Project Design, Scope Planner) have no memory between sessions. Handled by a portable context block produced at every natural pause point:
+Chat frameworks (Project Design, Scope Planner) have no memory between sessions.
+Continuity is maintained through a portable save block.
+
+**Save block triggers — produced at:**
+- Document complete (design document, scope plan)
+- User request at any point
+- Before a framework handoff (Design → Scope Planner → Session Runner)
+- When the user needs to continue in a new chat
+
+Save blocks are not produced after every topic. They mark meaningful stopping
+points only.
+
+**Save block completeness requirement:**
+Save blocks must be written to stand alone as the sole input for document
+generation in a new chat. The "Captured so far" field contains a complete
+record of every confirmed decision, assumption, risk, flag, and deferred
+decision — not a summary.
+
+**Context degradation:**
+Before generating the output document, Claude checks conversation length.
+If the conversation is long, the user is offered a fresh chat with a positive
+framing — not a warning:
 
 ```
-── SAVE THIS TO RESUME ──────────────────────────────
-Framework: Project Design
-Status: In progress
-Completed: Problem statement, target users, success criteria
-Parked: Data sensitivity (user unsure — flagged for later)
-Next: Constraints and timeline
-Communication preferences: Plain language · Step by step
-Last updated: [date]
-
-[structured summary of everything captured so far]
-── END SAVE BLOCK ───────────────────────────────────
+Starting a new chat to generate the document is a good option here —
+your save block contains everything needed and the document will have
+a clean context window to work in. Or I can generate it now if you'd
+prefer to keep going.
+→ Produce save block for a new chat / Generate here
 ```
 
-- Human-readable — user can recognise their own project in it
-- Saved to notes app, Google Doc, or text file
-- Resume starter prompt variant reads save block and continues from next item
-- Communication preferences carried forward — never asked twice
-- Resume flow: new chat → paste resume prompt → paste save block → continue
+Claude also signals degradation reactively if it occurs mid-conversation.
+Tone is normalising throughout — practical, not alarming.
+
+**Save block format:**
+```
+── SAVE THIS TO RESUME ─────────────────────────────────
+Framework: [framework name]
+Document version: [current version, or "not yet produced"]
+Status: [In progress / Complete]
+Date: [date]
+Communication preferences: [experience level] · [explanation depth] · [instruction detail]
+Save block delivery preference: [download / copy / not set]
+
+Completed topics: [list]
+Parked items: [anything deferred or skipped with reason]
+Next: [next topic, or "Document produced" if complete]
+
+Captured so far:
+[complete record — every confirmed decision, assumption, risk,
+flag, and deferred decision. Do not summarise — record in full.]
+── END SAVE BLOCK ──────────────────────────────────────
+```
+
+**Save block delivery:**
+- If artifacts supported: user offered download as .md file or copy from chat
+- If artifacts not supported: formatted markdown code block with copy button
+- Silent fallback: plain inline text if code block unavailable
+
+**Resume flow:**
+New chat → paste resume prompt → paste save block → Claude presents current
+state → user confirms or updates → document generated or conversation continues.
+
+If status is Complete and user is resuming to generate the document:
+Claude presents current state, asks if anything has changed, assesses any
+changes for version impact, then generates. No topics are re-asked.
+
+---
+
+### Output Document Versioning
+
+All user-facing ClaudeKit output documents follow a semantic versioning standard.
+Defined in full in claudekit-commons/conventions/output-document-versioning.md.
+
+**Applies to:**
+- Design documents (Project Design output)
+- Scope plans (Scope Planner output)
+- Handoff documents (Session Runner output)
+- Session change narratives (Session Runner output)
+- Security audit reports (Guardrails output)
+
+**Version format:** vMAJOR.MINOR.PATCH
+Version appears in both filename and document header. If they differ, header
+is authoritative.
+
+**Increment rules:**
+- Patch (x.x.1) — minor corrections, wording fixes, small additions.
+  Applied automatically with a note.
+- Minor (x.1.x) — new content, sections expanded, assumptions resolved.
+  Applied automatically with a note.
+- Major (x.0.0) — structural changes, fundamental pivot, significant sections
+  added or removed. User confirmation required before incrementing.
+
+Starting version for new documents: v1.0.0
+
+---
+
+### Chat Session Management
+
+Defines when to start new chats and how context degradation is handled across
+chat-native frameworks. Defined in full in
+claudekit-commons/conventions/chat-session-management.md.
+
+**New chat recommended when:**
+1. Moving between frameworks (Design → Scope Planner)
+2. Context degradation detected
+3. Out-of-scope item encountered that would consume needed context
+4. Context-heavy task required mid-session
+5. Explicit user request or failed resume
+
+**Out-of-scope handover:**
+When a task falls outside the current framework's scope:
+```
+That's worth looking at, but it's outside what this conversation is
+set up to do well. If we go into it here, it'll take up context that
+[this framework] still needs.
+→ Start a new chat for this / Continue here
+```
+A save block is always produced before any handover.
+
+**Framework handoff points:**
+- Design → Scope Planner: design document complete, save block produced,
+  Scope Planner starter prompt provided
+- Scope Planner → Session Runner: scope plan complete, save block produced,
+  Claude Code init instructions provided
 
 ---
 
@@ -967,8 +1098,13 @@ This document is the evolving output. Equivalent to Project Design and Scope Pla
 **Stage 3 — Build Session Runner**
 Manual state tracking until functional. Switch to using Session Runner for remaining build work as soon as viable.
 
-**Stage 4 — Build remaining frameworks using ClaudeKit**
-Project Design, Scope Planner, and website built using functional ClaudeKit. Full dogfooding begins. Real gaps between design and reality surface here.
+**Stage 4 — Build remaining frameworks using ClaudeKit** *(in progress)*
+Project Design, Scope Planner, and website built using functional ClaudeKit.
+Full dogfooding begins. Real gaps between design and reality surface here.
+
+- claudekit-design — complete. project-design-v1.0.0.md committed.
+- claudekit-scope — design conversation next
+- Website — after frameworks finalised
 
 ---
 
@@ -998,7 +1134,7 @@ Project Design, Scope Planner, and website built using functional ClaudeKit. Ful
 | Risk | Severity | Mitigation |
 |------|----------|------------|
 | Beginner abandonment at Claude Code install | High | Exceptional website install guidance, scope plan prepares user, step-by-step always available |
-| Chat session loss without save block | Medium | Save block at every pause point, website explains memory limitations upfront |
+| Chat session loss without save block | Medium | Save block at meaningful stopping points (document complete, user request, handoff, new chat needed); save block must be comprehensive enough to stand alone as document input; website explains memory limitations upfront |
 | Framework version confusion mid-project | Medium | Version visible in pre-flight, documentation versioned, older versions remain accessible |
 | Divergence handling overwhelm | Medium | Tone explicitly normalising throughout, website addresses in "what to expect" |
 | Manual action fatigue | Medium | Reserved for genuinely necessary steps, consistent scannable format, skip always available |
