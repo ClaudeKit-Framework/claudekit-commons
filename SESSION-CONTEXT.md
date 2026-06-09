@@ -10,11 +10,18 @@ Status: Done, pushed to main
 ## What's been done
 - All 7 schemas written (project-state, stack-manifest, session-contract, 
   task-record, handoff, flag, _defs)
-- All 5 conventions written (manual-action-block, phase-gate, 
-  session-boundary, documentation-requirements, dependency-policy)
+- All 8 conventions written (manual-action-block, phase-gate, 
+  session-boundary, documentation-requirements, dependency-policy,
+  manifest-file-fields, chat-session-management, output-document-versioning)
 - manifest-file-fields convention added — documents file entry fields including
   skip_if_framework_present (no formal manifest schema exists; this convention
   is the authoritative reference)
+- chat-session-management convention added — save block triggers, new chat 
+  triggers, context degradation (reactive + proactive), out-of-scope handover,
+  framework handoff points; applies to chat-native frameworks only
+- output-document-versioning convention added — semantic versioning for 
+  user-facing output documents; patch/minor auto-applied, major requires 
+  check-in; covers design docs, scope plans, handoffs, narratives, audit reports
 - known-incompatibilities.json — structure defined, one example entry
 - COMPATIBILITY.md — structure defined, placeholder rows
 - Init tooling — init.sh, update.sh, lib scripts (detect, copy, output, audit)
