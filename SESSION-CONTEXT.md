@@ -1,8 +1,8 @@
 # claudekit-commons — Session Context
 
 Last updated: June 2026
-Stage: 2 — Complete
-Status: Done, pushed to main
+Stage: 4 — In progress
+Status: In progress
 
 ## Always read first
 /home/freyja/Documents/Dev/ClaudeKit/claudekit-commons/DESIGN.md
@@ -36,6 +36,8 @@ Status: Done, pushed to main
 - runner manifest org name typo fixed (Claude-Kit-Framework → ClaudeKit-Framework)
 - DESIGN.md committed as persistent build context
 - All files committed and pushed to main
+- claudekit-design repo created — project-design-v1.0.0.md
+  prompt file built, reviewed, and committed to prompts/
 
 ## Open flags
 - known-incompatibilities.schema.json referenced in known-incompatibilities.json 
@@ -43,13 +45,11 @@ Status: Done, pushed to main
 - Action IDs in manifests must be generated as unique IDs at runtime 
   by init.sh, not used as static values — address when init.sh is revised
 - PowerShell equivalents of init.sh and update.sh — future session
-- Runner manifest source paths will need updating once claudekit-runner 
-  file structure is confirmed (same issue as guardrails manifests had)
 
 ## What's next
-- Stage 2 cleanup complete — all commons files correct and pushed to main
-- Stage 4 ready to begin — build remaining frameworks using ClaudeKit
-  (Project Design, Scope Planner, website — full dogfooding begins)
+- claudekit-scope design conversation — next in design chat
+- claudekit-scope repo build
+- Website
 - Add known-incompatibilities.schema.json when convenient
 
 ## Notes
