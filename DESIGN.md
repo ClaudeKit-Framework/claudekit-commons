@@ -1,8 +1,8 @@
 # ClaudeKit — Design Summary
 
 > **Status:** Stage 4 in progress  
-> **Version:** 0.8  
-> **Last updated:** June 2026
+> **Version:** 0.9  
+> **Last updated:** 11 June 2026
 
 ---
 
@@ -86,13 +86,108 @@ goals, constraints, stakeholders, tech decisions, risk flags, assumptions.
 ---
 
 ### 3. Scope Planner
-Converts the design document into a structured AI execution plan. Phases, sessions, dependencies, version pre-flight, manual action identification.
+Converts a design document into a structured build plan. Phases, sessions,
+sequencing, stack declaration, pre-flight requirements, and manual action
+identification.
 
-- **Interface:** Claude chat (primary) or Claude Code
+- **Interface:** Claude chat only — chat-native, no files installed into
+  user projects
 - **Users:** anyone moving from design into build planning
-- **Output:** scope plan with phases, sessions, sequencing, declared stack, and identified manual actions
-- **Stack declaration:** confirmed or flagged as assumption, never a hard gate
-- **Flag integration:** open flags surface as candidate session objectives during planning
+- **Delivery:** starter prompt copied from claudekit-scope repo or website,
+  pasted into a new Claude chat alongside the design document (pasted or
+  attached)
+- **Input:** design document from Project Design framework (primary);
+  Design save block accepted as fallback
+- **Output:** versioned scope plan (scope-plan-v1.0.0.md) saved to user's
+  project directory, read by Session Runner at session start
+- **Stack declaration:** confirmed or flagged as assumption — never a hard
+  gate unless the decision is so fundamental that no planning can proceed
+  without it
+- **Flag integration:** open flags from design document surface as candidate
+  session objectives during planning
+
+**Conversation flow:**
+
+Steps are preceded by document validation and Tier 1 item resolution.
+
+*Validation (before Step 1):*
+Lightweight validation reads the design document and produces a ✓ ⚠ ℹ
+summary. Tier 1 items — compliance flags, assumptions marked "confirm
+before scope planning begins", and undecided tech decisions — are worked
+through conversationally in order (compliance → assumptions → undecided
+tech) before planning begins. A handoff summary is produced when all Tier
+1 items are resolved or deferred.
+
+1. Project shape — establish overall sense of project structure at high
+   level before phase detail
+2. Phase breakdown — propose detailed phases with goals, exit criteria,
+   and sizing judgment
+3. Session sequencing — propose sessions within each phase using four-field
+   spec (objective, scope, depends on, manual actions); circular dependency
+   check before closing
+4. Stack and pre-flight — lead with tech decisions from design document,
+   confirm what needs installing or verifying before first session
+5. Manual action identification — lead with actions already captured in
+   Steps 3–4, ask for anything missing
+6. Open flags review — assign remaining flags from design document to
+   sessions or mark as standing flags
+
+**Key behaviours:**
+- Communication preferences inherited from design document header — never
+  asked again
+- Proposal-driven throughout: Claude proposes phase and session breakdowns
+  based on the design document; user confirms or adjusts. Experienced users
+  receive concise proposals; new users receive detailed step-by-step proposals.
+- Phase and session sizing judgment is active — Claude flags sessions that
+  are too broad, too narrow, or context-heavy before the user raises it
+- All four session fields always captured regardless of display preference
+- Scope creep named immediately — minor additions noted as deferred
+  decisions; significant new scope redirected to Project Design
+- Scope plan references source design document by filename and version —
+  traceable chain between design and build
+- All assumptions, risks, and deferred decisions from design document
+  reproduced in full in the scope plan — nothing filtered
+- I Don't Know system: same five-type model as Project Design, adapted for
+  planning-stage questions
+- Save blocks follow commons chat-session-management.md convention
+- Context degradation check before generating scope plan
+- Resume variant restores from save block; generates scope plan directly if
+  status is Complete
+- Revision variant handles mid-build replanning triggered by /revise-scope
+  in Session Runner
+
+**Failure modes handled:**
+- Design document too thin to plan from — flag honestly, offer return to
+  Design or proceed as provisional
+- Scope creep — named before absorbed; minor additions deferred, significant
+  scope redirected to Design
+- Stack undecided — hard gate only when fundamental (e.g. platform type
+  undecided); otherwise tech-decision session in Phase 1
+- Compliance flags — must appear in plan with dedicated session or explicit
+  acknowledged record; never silently absent
+- Circular session dependencies — flagged and resolved before scope plan is
+  produced
+- Mismatched scope plan on revision — both versions read, differences
+  listed, user confirms which to use
+
+**Revision variant:**
+Triggered by /revise-scope in Session Runner. Accepts current scope plan
+and description of what's changed. Confirms completed and locked sessions
+before replanning. Phase-level replan works through affected phases only,
+leaving completed work unchanged. Fundamental pivot redirects to Project
+Design with a list of what needs updating there first. Produces versioned
+updated scope plan saved alongside previous version; Runner reviews
+differences between versions and removes the old file.
+
+**Scope plan output structure:**
+Document Status (normalising statement + counts) · Stack Declaration with
+pre-flight requirements · Phases (goal, exit criteria, must-resolve items)
+· Sessions within phases (four-field spec) · Manual Actions (complete list)
+· Open Flags (standing items) · Deferred Decisions · Assumptions · Risks
+
+Filename: scope-plan-v1.0.0.md — lives in user project directory, read by
+Session Runner. Versioned filename (e.g. scope-plan-v1.2.0.md) on revision;
+Runner reviews differences between versions and removes old file.
 
 ---
 
@@ -165,7 +260,10 @@ For instructions, do you want:
 
 **How it flows through the frameworks:**
 - Claude Code reads these fields via CLAUDE.md at the start of every session and adjusts tone, depth, and context accordingly
-- Chat starter prompts ask the questions directly; save block carries answers forward so they're never asked twice
+- Project Design starter prompt asks the questions directly; save block
+  carries answers forward so they're never asked twice in Design.
+  Scope Planner inherits preferences from the design document header —
+  never asks again.
 - Revisited as a soft prompt at the start of each new phase — not every session
 - Changeable anytime via `/set-communication` command
 
@@ -1085,26 +1183,28 @@ Starter prompts linked from website and READMEs — Project Design, Scope Planne
 
 ClaudeKit is built using ClaudeKit where possible. The bootstrap problem — frameworks don't exist when you start building them — resolves in stages:
 
-**Stage 1 — Design and planning in chat** *(in progress)*
-This document is the evolving output. Equivalent to Project Design and Scope Planner artifacts produced manually.
+**Stage 1 — Design and planning in chat** *(complete)*
+This document is the output. Equivalent to Project Design and Scope Planner
+artifacts produced manually.
 
-**Stage 2 — Build commons and guardrails**
-- Original Claude-Code-Guardrails GitHub repo deleted — local files preserved and will be used to seed claudekit-guardrails
-- Commons has no dependencies on other ClaudeKit frameworks
-- Manual session tracking using this document as persistent context
+**Stage 2 — Build commons and guardrails** *(complete)*
+- Original Claude-Code-Guardrails GitHub repo deleted — local files
+  preserved and committed to claudekit-guardrails
+- Commons built: 7 schemas, 8 conventions, init tooling, manifests
 - GitHub org created: github.com/ClaudeKit-Framework
-- Org settings configured — repos not yet created
+- All repos created under ClaudeKit-Framework org
 
-**Stage 3 — Build Session Runner**
-Manual state tracking until functional. Switch to using Session Runner for remaining build work as soon as viable.
+**Stage 3 — Build Session Runner** *(complete)*
+claudekit-runner built and pushed. CLAUDE.md with 8 Priority Rules,
+13 commands, project-state and stack-manifest templates.
 
 **Stage 4 — Build remaining frameworks using ClaudeKit** *(in progress)*
 Project Design, Scope Planner, and website built using functional ClaudeKit.
 Full dogfooding begins. Real gaps between design and reality surface here.
 
 - claudekit-design — complete. project-design-v1.0.0.md committed.
-- claudekit-scope — design conversation next
-- Website — after frameworks finalised
+- claudekit-scope — complete. scope-planner-v1.0.0.md committed.
+- Website — next
 
 ---
 
