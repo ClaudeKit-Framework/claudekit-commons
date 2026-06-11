@@ -1,6 +1,6 @@
 # claudekit-commons — Session Context
 
-Last updated: June 2026
+Last updated: 11 June 2026
 Stage: 4 — In progress
 Status: In progress
 
@@ -38,6 +38,8 @@ Status: In progress
 - All files committed and pushed to main
 - claudekit-design repo created — project-design-v1.0.0.md
   prompt file built, reviewed, and committed to prompts/
+- claudekit-scope repo created — scope-planner-v1.0.0.md
+  prompt file built, reviewed, and committed to prompts/
 
 ## Open flags
 - known-incompatibilities.schema.json referenced in known-incompatibilities.json 
@@ -47,9 +49,8 @@ Status: In progress
 - PowerShell equivalents of init.sh and update.sh — future session
 
 ## What's next
-- claudekit-scope design conversation — next in design chat
-- claudekit-scope repo build
 - Website
+- DESIGN.md update to v0.9 now complete — committed
 - Add known-incompatibilities.schema.json when convenient
 
 ## Notes
